@@ -1,0 +1,61 @@
+import requests
+from picamera import PiCamera
+from datetime import datetime
+import time
+import smtplib
+from email.message import EmailMessage
+
+# Nastavení
+LATITUDE = 49.1951  # Brno
+LONGITUDE = 16.6068
+CHECK_INTERVAL = 60  # v sekundách
+ALERT_DISTANCE = 5  # vzdálenost ISS v stupních
+
+# Kamera
+camera = PiCamera()
+
+def get_iss_position():
+    url = "http://api.open-notify.org/iss-now.json"
+    response = requests.get(url)
+    data = response.json()
+    iss_lat = float(data['iss_position']['latitude'])
+    iss_lon = float(data['iss_position']['longitude'])
+    return iss_lat, iss_lon
+
+def is_close(iss_lat, iss_lon):
+    return abs(iss_lat - LATITUDE) <= ALERT_DISTANCE and abs(iss_lon - LONGITUDE) <= ALERT_DISTANCE
+
+def take_photo():
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = f"/home/pi/iss_{timestamp}.jpg"
+    camera.capture(filename)
+    print(f"Photo saved: {filename}")
+    return filename
+
+def send_email(photo_path):
+    msg = EmailMessage()
+    msg['Subject'] = 'ISS is nearby!'
+    msg['From'] = 'tvoje@email.com'
+    msg['To'] = 'cil@email.com'
+    msg.set_content('The ISS is close to your location. See attached photo.')
+    
+    with open(photo_path, 'rb') as f:
+        img_data = f.read()
+        msg.add_attachment(img_data, maintype='image', subtype='jpeg', filename=photo_path)
+    
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login('tvoje@email.com', 'tvoje_heslo')
+        smtp.send_message(msg)
+    
+    print("Email sent!")
+
+# Hlavní smyčka
+while True:
+    iss_lat, iss_lon = get_iss_position()
+    print(f"ISS position: lat={iss_lat}, lon={iss_lon}")
+    
+    if is_close(iss_lat, iss_lon):
+        photo = take_photo()
+        send_email(photo)
+    
+    time.sleep(CHECK_INTERVAL)
