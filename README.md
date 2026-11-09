@@ -1,10 +1,10 @@
 # 🛰️ Space Lab - Exploring the Universe  
 
-Welcome to **Space Lab**, a repository dedicated to space exploration, astrophysics simulations, and satellite tracking. This project aims to provide tools, data analysis, and interactive models to study celestial objects, planetary motion, and spacecraft telemetry.  
+Welcome to **Space Lab**, a repository dedicated to space exploration, astrophysics simulations, and satellite tracking. This project aims to provide tools, data analysis, and interactive models to study planetary motion, and spacecraft telemetry.  
 
 ---
 
-## 🚀 About the Project  
+## 🚀 About the Projects  
 
 **Space Lab** is an open-source initiative designed for:  
 
@@ -25,4 +25,4 @@ Welcome to **Space Lab**, a repository dedicated to space exploration, astrophys
 - 📝 **Educational modules** explaining space physics with interactive examples  
 
 
-Hope you will find that repo somehow interesting, it's just some basic practice projects. 🤗
+Hope you will find that repo somehow interesting, it's just some practice projects. 🤗
